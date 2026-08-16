@@ -1,0 +1,65 @@
+.
+├── AGENTS.md
+├── CLAUDE.md
+├── README 2.md
+├── README.md
+├── app
+│   ├── _layout.tsx
+│   ├── conversation.tsx
+│   ├── history.tsx
+│   ├── index.tsx
+│   ├── settings.tsx
+│   └── transactions.tsx
+├── app.json
+├── assets
+│   └── images
+│       ├── android-icon-background.png
+│       ├── android-icon-foreground.png
+│       ├── android-icon-monochrome.png
+│       ├── favicon.png
+│       ├── icon.png
+│       ├── partial-react-logo.png
+│       ├── react-logo.png
+│       ├── react-logo@2x.png
+│       ├── react-logo@3x.png
+│       └── splash-icon.png
+├── components
+│   ├── common
+│   │   └── ThemedTextInput.tsx
+│   ├── driver
+│   │   ├── ContactModal.tsx
+│   │   └── DriverCard.tsx
+│   ├── external-link.tsx
+│   ├── filters
+│   │   ├── DropdownMenu.tsx
+│   │   ├── FilterModal.tsx
+│   │   └── IconMenu.tsx
+│   ├── haptic-tab.tsx
+│   ├── hello-wave.tsx
+│   ├── parallax-scroll-view.tsx
+│   ├── themed-text.tsx
+│   ├── themed-view.tsx
+│   └── ui
+│       ├── collapsible.tsx
+│       ├── icon-symbol.ios.tsx
+│       └── icon-symbol.tsx
+├── constants
+│   └── theme.ts
+├── eslint.config.js
+├── hooks
+│   ├── use-color-scheme.ts
+│   ├── use-color-scheme.web.ts
+│   └── use-theme-color.ts
+├── mockData.tsx
+├── package-lock.json
+├── package.json
+├── scripts
+│   └── reset-project.js
+├── services
+│   ├── driverService.ts
+│   └── options.ts
+├── tree.txt
+├── tsconfig.json
+└── types.ts
+
+13 directories, 50 files
