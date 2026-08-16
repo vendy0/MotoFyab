@@ -1,15 +1,16 @@
 .
 ├── AGENTS.md
 ├── CLAUDE.md
-├── README 2.md
-├── README.md
+├── README-MotoFyab.md
 ├── app
-│   ├── _layout.tsx
-│   ├── conversation.tsx
-│   ├── history.tsx
-│   ├── index.tsx
-│   ├── settings.tsx
-│   └── transactions.tsx
+│   ├── (tabs)
+│   │   ├── _layout.tsx
+│   │   ├── conversation.tsx
+│   │   ├── history.tsx
+│   │   ├── index.tsx
+│   │   ├── settings.tsx
+│   │   └── transactions.tsx
+│   └── _layout.tsx
 ├── app.json
 ├── assets
 │   └── images
@@ -62,4 +63,4 @@
 ├── tsconfig.json
 └── types.ts
 
-13 directories, 50 files
+14 directories, 50 files

@@ -1,90 +1,95 @@
 /**
- * Palette MotoFyab.
+ * Palette MotoFyab — v2.
  *
- * Direction : "signalétique de rue haïtienne" — aplats francs, contours encre
- * épais, ombres dures décalées (pas de flou/glow), sans le combo
- * crème + serif + terracotta ni le fond quasi-noir + accent néon qu'on voit
- * partout ailleurs.
+ * Reprise après retour : la v1 (bleu marine très sombre + orange vif,
+ * contours épais partout) lisait "template néo-brutaliste IA". Cette
+ * version adoucit les teintes pour qu'elles appartiennent à la même
+ * famille (saturation/luminosité rapprochées), ajoute des couleurs de
+ * soutien pour que ce soit un vrai système et pas un duo qui s'affronte,
+ * et remplace les contours épais + ombre dure décalée par des bordures
+ * fines et une ombre douce classique.
  *
- * - `tint`   = orange Mangue : action principale, sélection, accent de marque.
- * - `tint2`  = bleu Encre : action secondaire, surfaces sombres, contraste.
- * - `star`   = or : réservé à la notation, pour ne jamais se confondre avec le tint.
- * - `border` = contour épais façon enseigne peinte (2px dans les composants).
- * - `card`   = surface des cartes/modales, distincte du fond de l'écran.
+ * - `tint`   = Ambre : action principale, sélection.
+ * - `tint2`  = Denim : action/accent secondaire.
+ * - `gold`   = notation (étoiles) — distinct de `tint` pour ne pas se confondre
+ *   avec un bouton actif.
+ * - `sage`   = accent tertiaire discret (badges, succès).
+ * - `border` = réservé aux éléments interactifs (boutons, toggles) — pas aux cartes.
+ * - `borderMuted` = bordure fine des cartes/inputs, à peine visible.
  */
 
 import { Platform } from 'react-native';
 
-const tintColorLight = '#F2760F'; // Mangue
-const tintColorDark = '#FF8A3D'; // Mangue, éclaircie pour ressortir sur fond encre
+const tintColorLight = '#C97A3D'; // Ambre
+const tintColorDark = '#E0925A'; // Ambre, éclairci pour le fond sombre
 
 export const Colors = {
   light: {
-    text: '#12203A',
-    background: '#F4F6F9',
+    text: '#26333F',
+    background: '#F1F3F5',
     card: '#FFFFFF',
-    border: '#12203A',
-    borderMuted: '#D7DEE8',
+    border: '#3A5A78',
+    borderMuted: '#DEE2E7',
     tint: tintColorLight,
-    tint2: '#12203A',
-    icon: '#4A5568',
-    tabIconDefault: '#8B93A4',
+    tint2: '#3A5A78',
+    icon: '#5C6B78',
+    tabIconDefault: '#9AA5AF',
     tabIconSelected: tintColorLight,
-    star: '#F5A623',
-    danger: '#E63946',
-    success: '#2F9E5B',
-    shadow: '#12203A',
+    gold: '#D9A441',
+    sage: '#5E8B7E',
+    danger: '#BC5544',
+    success: '#4C8567',
   },
   dark: {
-    text: '#EDEFF3',
-    background: '#0F1E33',
-    card: '#16294A',
-    border: '#EDEFF3',
-    borderMuted: '#2B3B57',
+    text: '#EAE6DE',
+    background: '#17212C',
+    card: '#1F2B38',
+    border: '#7FA0BE',
+    borderMuted: '#2C3A48',
     tint: tintColorDark,
-    tint2: '#FFA94D',
-    icon: '#AAB4C6',
-    tabIconDefault: '#7C8AA3',
+    tint2: '#7FA0BE',
+    icon: '#9CAAB6',
+    tabIconDefault: '#6E7C88',
     tabIconSelected: tintColorDark,
-    star: '#FFD166',
-    danger: '#FF8A8A',
-    success: '#4CC38A',
-    shadow: '#000000',
+    gold: '#E6BB63',
+    sage: '#7FAE9F',
+    danger: '#D97A68',
+    success: '#7FAE9F',
   },
 };
 
 /**
- * Ombre "dure" façon enseigne peinte : décalée, sans flou, sans dégradé.
- * À combiner avec un `border` épais sur le même élément.
- * NB : Android (elevation) ne permet pas un contrôle fin du décalage — c'est
- * une approximation volontaire, le rendu iOS/web reste fidèle.
+ * Ombre douce classique (flou léger, décalage discret) — remplace l'ombre
+ * "dure" décalée de la v1, trop tape-à-l'œil.
  */
-export const HardShadow = {
+export const CardShadow = {
   light: {
-    shadowColor: Colors.light.shadow,
-    shadowOffset: { width: 3, height: 3 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 4,
+    shadowColor: '#26333F',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 2,
   },
   dark: {
-    shadowColor: Colors.dark.shadow,
-    shadowOffset: { width: 3, height: 3 },
-    shadowOpacity: 0.6,
-    shadowRadius: 0,
-    elevation: 4,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 2,
   },
 };
 
 export const Radii = {
-  sm: 8,
-  md: 12,
-  lg: 16,
+  sm: 10,
+  md: 14,
+  lg: 18,
 };
 
+/** `thin` pour les cartes/inputs (quasi invisible), `control` pour les éléments
+ * interactifs qu'on veut clairement délimiter (boutons, toggles). */
 export const BorderWidth = {
   thin: 1,
-  thick: 2,
+  control: 1.5,
 };
 
 export const Fonts = Platform.select({

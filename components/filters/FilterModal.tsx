@@ -1,242 +1,1 @@
-import { useEffect, useState } from 'react';
-import { Modal, Pressable, StyleSheet, View, useColorScheme } from 'react-native';
-
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { ThemedTextInput } from '@/components/common/ThemedTextInput';
-import { useThemeColor } from '@/hooks/use-theme-color';
-import { HardShadow, Radii, BorderWidth } from '@/constants/theme';
-import { Comparator, DriverFilters, NumericFilter } from '@/types';
-
-type Props = {
-  visible: boolean;
-  initialFilters: DriverFilters;
-  onClose: () => void;
-  onApply: (filters: DriverFilters) => void;
-};
-
-type FieldState = {
-  comparator: Comparator;
-  value: string; // texte brut de l'input, converti au moment d'appliquer
-};
-
-const EMPTY_FIELD: FieldState = { comparator: '>', value: '' };
-
-function toFieldState(filter?: NumericFilter): FieldState {
-  if (!filter) return { ...EMPTY_FIELD };
-  return { comparator: filter.comparator, value: String(filter.value) };
-}
-
-function toNumericFilter(field: FieldState): NumericFilter | undefined {
-  const parsed = Number(field.value.replace(',', '.'));
-  if (field.value.trim() === '' || Number.isNaN(parsed)) return undefined;
-  return { comparator: field.comparator, value: parsed };
-}
-
-function ComparatorToggle({
-  value,
-  onChange,
-}: {
-  value: Comparator;
-  onChange: (comparator: Comparator) => void;
-}) {
-  const borderColor = useThemeColor({}, 'border');
-  const tint = useThemeColor({}, 'tint');
-
-  return (
-    <View style={[styles.toggleGroup, { borderColor }]}>
-      {(['>', '<'] as Comparator[]).map((option) => (
-        <Pressable
-          key={option}
-          style={[styles.toggleOption, value === option && { backgroundColor: tint }]}
-          onPress={() => onChange(option)}
-        >
-          <ThemedText
-            style={[styles.toggleText, value === option && styles.toggleTextActive]}
-          >
-            {option}
-          </ThemedText>
-        </Pressable>
-      ))}
-    </View>
-  );
-}
-
-function FilterRow({
-  label,
-  suffix,
-  field,
-  onChange,
-}: {
-  label: string;
-  suffix: string;
-  field: FieldState;
-  onChange: (field: FieldState) => void;
-}) {
-  return (
-    <View style={styles.row}>
-      <ThemedText style={styles.rowLabel}>{label}</ThemedText>
-      <View style={styles.rowControls}>
-        <ComparatorToggle
-          value={field.comparator}
-          onChange={(comparator) => onChange({ ...field, comparator })}
-        />
-        <ThemedTextInput
-          style={styles.rowInput}
-          keyboardType="numeric"
-          value={field.value}
-          onChangeText={(value) => onChange({ ...field, value })}
-          placeholder="0"
-        />
-        <ThemedText style={styles.suffix}>{suffix}</ThemedText>
-      </View>
-    </View>
-  );
-}
-
-export default function FilterModal({ visible, initialFilters, onClose, onApply }: Props) {
-  const [rating, setRating] = useState<FieldState>(EMPTY_FIELD);
-  const [trips, setTrips] = useState<FieldState>(EMPTY_FIELD);
-  const [distance, setDistance] = useState<FieldState>(EMPTY_FIELD);
-
-  const colorScheme = useColorScheme() ?? 'light';
-  const borderColor = useThemeColor({}, 'border');
-  const borderMutedColor = useThemeColor({}, 'borderMuted');
-  const tint = useThemeColor({}, 'tint');
-  const hardShadow = HardShadow[colorScheme];
-
-  // Recharge les champs avec les filtres actifs à chaque ouverture
-  useEffect(() => {
-    if (visible) {
-      setRating(toFieldState(initialFilters.rating));
-      setTrips(toFieldState(initialFilters.trips));
-      setDistance(toFieldState(initialFilters.distanceMeters));
-    }
-  }, [visible, initialFilters]);
-
-  const handleReset = () => {
-    setRating({ ...EMPTY_FIELD });
-    setTrips({ ...EMPTY_FIELD });
-    setDistance({ ...EMPTY_FIELD });
-  };
-
-  const handleApply = () => {
-    onApply({
-      rating: toNumericFilter(rating),
-      trips: toNumericFilter(trips),
-      distanceMeters: toNumericFilter(distance),
-    });
-    onClose();
-  };
-
-  return (
-    <Modal transparent animationType="fade" visible={visible} onRequestClose={onClose}>
-      <View style={styles.backdrop}>
-        <ThemedView
-          style={[styles.card, { borderColor }, hardShadow]}
-          lightColor="#ffffff"
-          darkColor="#16294A"
-        >
-          <ThemedText type="subtitle" style={styles.title}>
-            Filtrer les chauffeurs
-          </ThemedText>
-
-          <FilterRow label="Note" suffix="☆" field={rating} onChange={setRating} />
-          <FilterRow label="Courses" suffix="courses" field={trips} onChange={setTrips} />
-          <FilterRow label="Distance" suffix="m" field={distance} onChange={setDistance} />
-
-          <View style={styles.actions}>
-            <Pressable style={[styles.secondaryBtn, { borderColor: borderMutedColor }]} onPress={handleReset}>
-              <ThemedText style={styles.secondaryLabel}>Réinitialiser</ThemedText>
-            </Pressable>
-            <Pressable style={[styles.primaryBtn, { backgroundColor: tint, borderColor }]} onPress={handleApply}>
-              <ThemedText style={styles.primaryLabel}>Appliquer</ThemedText>
-            </Pressable>
-          </View>
-        </ThemedView>
-      </View>
-    </Modal>
-  );
-}
-
-const styles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    backgroundColor: 'rgba(18,32,58,0.5)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  card: {
-    width: 320,
-    borderRadius: Radii.lg,
-    borderWidth: BorderWidth.thick,
-    padding: 20,
-  },
-  title: {
-    marginBottom: 16,
-  },
-  row: {
-    marginBottom: 14,
-  },
-  rowLabel: {
-    fontSize: 13,
-    fontWeight: '600',
-    marginBottom: 6,
-    opacity: 0.8,
-  },
-  rowControls: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  toggleGroup: {
-    flexDirection: 'row',
-    borderWidth: BorderWidth.thick,
-    borderRadius: Radii.sm,
-    overflow: 'hidden',
-  },
-  toggleOption: {
-    paddingHorizontal: 12,
-    paddingVertical: 9,
-  },
-  toggleText: {
-    fontWeight: '700',
-  },
-  toggleTextActive: {
-    color: '#fff',
-  },
-  rowInput: {
-    flex: 1,
-    paddingVertical: 9,
-  },
-  suffix: {
-    fontSize: 13,
-    opacity: 0.7,
-    width: 56,
-  },
-  actions: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    gap: 12,
-    marginTop: 8,
-  },
-  secondaryBtn: {
-    paddingVertical: 10,
-    paddingHorizontal: 18,
-    borderRadius: Radii.sm,
-    borderWidth: BorderWidth.thin,
-  },
-  secondaryLabel: {
-    fontWeight: '600',
-  },
-  primaryBtn: {
-    paddingVertical: 10,
-    paddingHorizontal: 18,
-    borderRadius: Radii.sm,
-    borderWidth: BorderWidth.thick,
-  },
-  primaryLabel: {
-    color: '#fff',
-    fontWeight: '700',
-  },
-});
+/** @format */import { ReactNode, useEffect, useState } from "react";import { Modal, Pressable, StyleSheet, View, useColorScheme, ScrollView } from "react-native";import { MapPin, RefreshCcw, Star } from "lucide-react-native";import { ThemedText } from "@/components/themed-text";import { ThemedView } from "@/components/themed-view";import { ThemedTextInput } from "@/components/common/ThemedTextInput";import { useThemeColor } from "@/hooks/use-theme-color";import { CardShadow, Radii, BorderWidth } from "@/constants/theme";import { Comparator, DriverFilters, NumericFilter } from "@/types";type Props = {	visible: boolean;	initialFilters: DriverFilters;	onClose: () => void;	onApply: (filters: DriverFilters) => void;};type FieldState = {	comparator: Comparator;	value: string; // texte brut de l'input, converti au moment d'appliquer};const EMPTY_FIELD: FieldState = { comparator: ">", value: "" };function toFieldState(filter?: NumericFilter): FieldState {	if (!filter) return { ...EMPTY_FIELD };	return { comparator: filter.comparator, value: String(filter.value) };}function toNumericFilter(field: FieldState): NumericFilter | undefined {	const parsed = Number(field.value.replace(",", "."));	if (field.value.trim() === "" || Number.isNaN(parsed)) return undefined;	return { comparator: field.comparator, value: parsed };}// Libellés en clair plutôt que les symboles ">"/"<", pour que le sens du// filtre soit compris sans avoir à réfléchir.const COMPARATOR_LABELS: Record<Comparator, string> = {	">": "Minimum",	"<": "Maximum"};function ComparatorToggle({ value, onChange }: { value: Comparator; onChange: (comparator: Comparator) => void }) {	const borderColor = useThemeColor({}, "borderMuted");	const tint = useThemeColor({}, "tint");	const textColor = useThemeColor({}, "text");	return (		<View style={[styles.toggleGroup, { borderColor }]}>			{([">", "<"] as Comparator[]).map(option => (				<Pressable key={option} style={[styles.toggleOption, value === option && { backgroundColor: tint }]} onPress={() => onChange(option)}>					<ThemedText style={[styles.toggleText, { color: value === option ? "#fff" : textColor }]}>{COMPARATOR_LABELS[option]}</ThemedText>				</Pressable>			))}		</View>	);}// Résume le filtre en une phrase, pour confirmer à l'utilisateur ce qu'il// est en train de configurer avant même d'appuyer sur "Appliquer".function fieldPreview(field: FieldState, noun: string, suffix: string): string {	if (field.value.trim() === "") return `Tous les chauffeurs, sans distinction de ${noun}`;	const parsed = Number(field.value.replace(",", "."));	if (Number.isNaN(parsed)) return `Tous les chauffeurs, sans distinction de ${noun}`;	return field.comparator === ">" ? `${COMPARATOR_LABELS[">"]} ${parsed}${suffix}` : `${COMPARATOR_LABELS["<"]} ${parsed}${suffix}`;}function FilterField({ icon, label, noun, suffix, placeholder, field, onChange }: { icon: ReactNode; label: string; noun: string; suffix: string; placeholder: string; field: FieldState; onChange: (field: FieldState) => void }) {	const dividerColor = useThemeColor({}, "borderMuted");	const mutedColor = useThemeColor({}, "icon");	return (		<View style={[styles.field, { borderTopColor: dividerColor }]}>			<View style={styles.fieldHeader}>				{icon}				<ThemedText style={styles.fieldLabel}>{label}</ThemedText>			</View>			<ComparatorToggle value={field.comparator} onChange={comparator => onChange({ ...field, comparator })} />			<View style={styles.fieldInputRow}>				<ThemedTextInput style={styles.fieldInput} keyboardType="numeric" value={field.value} onChangeText={value => onChange({ ...field, value })} placeholder={placeholder} />				<ThemedText style={styles.fieldSuffix}>{suffix}</ThemedText>			</View>			<ThemedText style={[styles.fieldPreview, { color: mutedColor }]}>{fieldPreview(field, noun, suffix)}</ThemedText>		</View>	);}export default function FilterModal({ visible, initialFilters, onClose, onApply }: Props) {	const [rating, setRating] = useState<FieldState>(EMPTY_FIELD);	const [trips, setTrips] = useState<FieldState>(EMPTY_FIELD);	const [distance, setDistance] = useState<FieldState>(EMPTY_FIELD);	const colorScheme = useColorScheme() ?? "light";	const cardColor = useThemeColor({}, "card");	const borderMutedColor = useThemeColor({}, "borderMuted");	const tint = useThemeColor({}, "tint");	const goldColor = useThemeColor({}, "gold");	const iconColor = useThemeColor({}, "icon");	const cardShadow = CardShadow[colorScheme];	// Recharge les champs avec les filtres actifs à chaque ouverture	useEffect(() => {		if (visible) {			setRating(toFieldState(initialFilters.rating));			setTrips(toFieldState(initialFilters.trips));			setDistance(toFieldState(initialFilters.distanceMeters));		}	}, [visible, initialFilters]);	const handleReset = () => {		setRating({ ...EMPTY_FIELD });		setTrips({ ...EMPTY_FIELD });		setDistance({ ...EMPTY_FIELD });	};	const handleApply = () => {		onApply({			rating: toNumericFilter(rating),			trips: toNumericFilter(trips),			distanceMeters: toNumericFilter(distance)		});		onClose();	};		return (		<Modal transparent animationType="fade" visible={visible} onRequestClose={onClose}>			<View style={styles.backdrop}>    			<ThemedView style={[styles.card, { backgroundColor: cardColor }, cardShadow]}>                    <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">    					<ThemedText type="subtitle" style={styles.title}> Filtrer les chauffeurs</ThemedText>    					<ThemedText style={[styles.subtitle, { color: iconColor }]}>Laisse un champ vide pour ne pas filtrer dessus.</ThemedText>        					<FilterField icon={<Star size={16} color={goldColor} fill={goldColor} />} label="Note" noun="note" suffix=" ★" placeholder="2.5" field={rating} onChange={setRating} />    					<FilterField icon={<RefreshCcw size={15} color={iconColor} strokeWidth={2.5} />} label="Courses réussies" noun="nombre de courses" suffix=" courses" placeholder="20" field={trips} onChange={setTrips} />    					<FilterField icon={<MapPin size={16} color={iconColor} strokeWidth={2.5} />} label="Distance" noun="distance" suffix=" m" placeholder="500" field={distance} onChange={setDistance} />        					<View style={styles.actions}>    						<Pressable style={[styles.secondaryBtn, { borderColor: borderMutedColor }]} onPress={onClose}>    							<ThemedText style={styles.secondaryLabel}>Annuler</ThemedText>    						</Pressable>    						<Pressable style={[styles.secondaryBtn, { borderColor: borderMutedColor }]} onPress={handleReset}>    							<ThemedText style={styles.secondaryLabel}>Réinitialiser</ThemedText>    						</Pressable>    						<Pressable style={[styles.primaryBtn, { backgroundColor: tint }]} onPress={handleApply}>    							<ThemedText style={styles.primaryLabel}>Appliquer</ThemedText>    						</Pressable>    				    </View>        			</ScrollView>    			</ThemedView>			</View>		</Modal>	);}const styles = StyleSheet.create({	backdrop: {		flex: 1,		backgroundColor: "rgba(0,0,0,0.4)",		alignItems: "center",		justifyContent: "center"	},	card: {		width: 320,		maxHeight: "85%",		borderRadius: Radii.lg,		padding: 20	},	title: {		marginBottom: 4	},	subtitle: {		fontSize: 13,		marginBottom: 8	},	field: {		borderTopWidth: BorderWidth.thin,		paddingTop: 14,		marginTop: 14	},	fieldHeader: {		flexDirection: "row",		alignItems: "center",		gap: 7,		marginBottom: 10	},	fieldLabel: {		fontSize: 14,		fontWeight: "700"	},	toggleGroup: {		flexDirection: "row",		borderWidth: BorderWidth.thin,		borderRadius: Radii.sm,		overflow: "hidden",		marginBottom: 10	},	toggleOption: {		flex: 1,		alignItems: "center",		paddingVertical: 9	},	toggleText: {		fontSize: 13,		fontWeight: "600"	},	fieldInputRow: {		flexDirection: "row",		alignItems: "center",		gap: 8	},	fieldInput: {		flex: 1,		paddingVertical: 9	},	fieldSuffix: {		fontSize: 13,		opacity: 0.7	},	fieldPreview: {		fontSize: 12,		marginTop: 8	},	actions: {		gap: 8,		marginTop: 18,		width: "100%"	},	secondaryBtn: {	    flex: 1,		paddingVertical: 10,		paddingHorizontal: 18,		borderRadius: Radii.sm,		borderWidth: BorderWidth.thin,		alignItems: "center"	},	secondaryLabel: {		fontWeight: "600",		textAlign: "center"	},	primaryBtn: {	    flex: 1,		paddingVertical: 10,		borderRadius: Radii.sm,		alignItems: "center"	},	primaryLabel: {		color: "#fff",		fontWeight: "700",		textAlign: "center"	}});
