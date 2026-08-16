@@ -1,41 +1,97 @@
 /**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
+ * Palette MotoFyab.
+ *
+ * Direction : "signalétique de rue haïtienne" — aplats francs, contours encre
+ * épais, ombres dures décalées (pas de flou/glow), sans le combo
+ * crème + serif + terracotta ni le fond quasi-noir + accent néon qu'on voit
+ * partout ailleurs.
+ *
+ * - `tint`   = orange Mangue : action principale, sélection, accent de marque.
+ * - `tint2`  = bleu Encre : action secondaire, surfaces sombres, contraste.
+ * - `star`   = or : réservé à la notation, pour ne jamais se confondre avec le tint.
+ * - `border` = contour épais façon enseigne peinte (2px dans les composants).
+ * - `card`   = surface des cartes/modales, distincte du fond de l'écran.
  */
 
 import { Platform } from 'react-native';
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
+const tintColorLight = '#F2760F'; // Mangue
+const tintColorDark = '#FF8A3D'; // Mangue, éclaircie pour ressortir sur fond encre
 
 export const Colors = {
   light: {
-    text: '#11181C',
-    background: '#fff',
+    text: '#12203A',
+    background: '#F4F6F9',
+    card: '#FFFFFF',
+    border: '#12203A',
+    borderMuted: '#D7DEE8',
     tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
+    tint2: '#12203A',
+    icon: '#4A5568',
+    tabIconDefault: '#8B93A4',
     tabIconSelected: tintColorLight,
+    star: '#F5A623',
+    danger: '#E63946',
+    success: '#2F9E5B',
+    shadow: '#12203A',
   },
   dark: {
-    text: '#ECEDEE',
-    background: '#151718',
+    text: '#EDEFF3',
+    background: '#0F1E33',
+    card: '#16294A',
+    border: '#EDEFF3',
+    borderMuted: '#2B3B57',
     tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
+    tint2: '#FFA94D',
+    icon: '#AAB4C6',
+    tabIconDefault: '#7C8AA3',
     tabIconSelected: tintColorDark,
+    star: '#FFD166',
+    danger: '#FF8A8A',
+    success: '#4CC38A',
+    shadow: '#000000',
   },
+};
+
+/**
+ * Ombre "dure" façon enseigne peinte : décalée, sans flou, sans dégradé.
+ * À combiner avec un `border` épais sur le même élément.
+ * NB : Android (elevation) ne permet pas un contrôle fin du décalage — c'est
+ * une approximation volontaire, le rendu iOS/web reste fidèle.
+ */
+export const HardShadow = {
+  light: {
+    shadowColor: Colors.light.shadow,
+    shadowOffset: { width: 3, height: 3 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 4,
+  },
+  dark: {
+    shadowColor: Colors.dark.shadow,
+    shadowOffset: { width: 3, height: 3 },
+    shadowOpacity: 0.6,
+    shadowRadius: 0,
+    elevation: 4,
+  },
+};
+
+export const Radii = {
+  sm: 8,
+  md: 12,
+  lg: 16,
+};
+
+export const BorderWidth = {
+  thin: 1,
+  thick: 2,
 };
 
 export const Fonts = Platform.select({
   ios: {
-    /** iOS `UIFontDescriptorSystemDesignDefault` */
     sans: 'system-ui',
-    /** iOS `UIFontDescriptorSystemDesignSerif` */
     serif: 'ui-serif',
-    /** iOS `UIFontDescriptorSystemDesignRounded` */
     rounded: 'ui-rounded',
-    /** iOS `UIFontDescriptorSystemDesignMonospaced` */
     mono: 'ui-monospace',
   },
   default: {

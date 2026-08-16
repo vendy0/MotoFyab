@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Modal, Pressable, StyleSheet, View } from 'react-native';
+import { Modal, Pressable, StyleSheet, View, useColorScheme } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { ThemedTextInput } from '@/components/common/ThemedTextInput';
+import { useThemeColor } from '@/hooks/use-theme-color';
+import { HardShadow, Radii, BorderWidth } from '@/constants/theme';
 import { Driver } from '@/types';
 
 type Props = {
@@ -16,6 +18,12 @@ type Props = {
 export default function ContactModal({ visible, driver, onCancel, onConfirm }: Props) {
   const [pickupLocation, setPickupLocation] = useState('');
   const [destination, setDestination] = useState('');
+
+  const colorScheme = useColorScheme() ?? 'light';
+  const borderColor = useThemeColor({}, 'border');
+  const borderMutedColor = useThemeColor({}, 'borderMuted');
+  const tint = useThemeColor({}, 'tint');
+  const hardShadow = HardShadow[colorScheme];
 
   // Réinitialise les champs à chaque nouvelle ouverture
   useEffect(() => {
@@ -30,7 +38,11 @@ export default function ContactModal({ visible, driver, onCancel, onConfirm }: P
   return (
     <Modal transparent animationType="fade" visible={visible} onRequestClose={onCancel}>
       <View style={styles.backdrop}>
-        <ThemedView style={styles.card} lightColor="#ffffff" darkColor="#1f2224">
+        <ThemedView
+          style={[styles.card, { borderColor }, hardShadow]}
+          lightColor="#ffffff"
+          darkColor="#16294A"
+        >
           <ThemedText type="subtitle" style={styles.title}>
             Contacter
           </ThemedText>
@@ -58,11 +70,15 @@ export default function ContactModal({ visible, driver, onCancel, onConfirm }: P
           </View>
 
           <View style={styles.actions}>
-            <Pressable style={styles.secondaryBtn} onPress={onCancel}>
+            <Pressable style={[styles.secondaryBtn, { borderColor: borderMutedColor }]} onPress={onCancel}>
               <ThemedText style={styles.secondaryLabel}>Non</ThemedText>
             </Pressable>
             <Pressable
-              style={[styles.primaryBtn, !canConfirm && styles.primaryBtnDisabled]}
+              style={[
+                styles.primaryBtn,
+                { backgroundColor: tint, borderColor },
+                !canConfirm && styles.primaryBtnDisabled,
+              ]}
               disabled={!canConfirm}
               onPress={() => onConfirm({ pickupLocation, destination })}
             >
@@ -78,13 +94,14 @@ export default function ContactModal({ visible, driver, onCancel, onConfirm }: P
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)',
+    backgroundColor: 'rgba(18,32,58,0.5)',
     alignItems: 'center',
     justifyContent: 'center',
   },
   card: {
     width: 320,
-    borderRadius: 14,
+    borderRadius: Radii.lg,
+    borderWidth: BorderWidth.thick,
     padding: 20,
   },
   title: {
@@ -113,9 +130,8 @@ const styles = StyleSheet.create({
   secondaryBtn: {
     paddingVertical: 10,
     paddingHorizontal: 18,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#ccc',
+    borderRadius: Radii.sm,
+    borderWidth: BorderWidth.thin,
   },
   secondaryLabel: {
     fontWeight: '600',
@@ -123,14 +139,14 @@ const styles = StyleSheet.create({
   primaryBtn: {
     paddingVertical: 10,
     paddingHorizontal: 18,
-    borderRadius: 8,
-    backgroundColor: '#1e1e1e',
+    borderRadius: Radii.sm,
+    borderWidth: BorderWidth.thick,
   },
   primaryBtnDisabled: {
     opacity: 0.4,
   },
   primaryLabel: {
     color: '#fff',
-    fontWeight: '600',
+    fontWeight: '700',
   },
 });

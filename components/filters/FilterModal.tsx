@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Modal, Pressable, StyleSheet, View } from 'react-native';
+import { Modal, Pressable, StyleSheet, View, useColorScheme } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { ThemedTextInput } from '@/components/common/ThemedTextInput';
+import { useThemeColor } from '@/hooks/use-theme-color';
+import { HardShadow, Radii, BorderWidth } from '@/constants/theme';
 import { Comparator, DriverFilters, NumericFilter } from '@/types';
 
 type Props = {
@@ -38,12 +40,15 @@ function ComparatorToggle({
   value: Comparator;
   onChange: (comparator: Comparator) => void;
 }) {
+  const borderColor = useThemeColor({}, 'border');
+  const tint = useThemeColor({}, 'tint');
+
   return (
-    <View style={styles.toggleGroup}>
+    <View style={[styles.toggleGroup, { borderColor }]}>
       {(['>', '<'] as Comparator[]).map((option) => (
         <Pressable
           key={option}
-          style={[styles.toggleOption, value === option && styles.toggleOptionActive]}
+          style={[styles.toggleOption, value === option && { backgroundColor: tint }]}
           onPress={() => onChange(option)}
         >
           <ThemedText
@@ -94,6 +99,12 @@ export default function FilterModal({ visible, initialFilters, onClose, onApply 
   const [trips, setTrips] = useState<FieldState>(EMPTY_FIELD);
   const [distance, setDistance] = useState<FieldState>(EMPTY_FIELD);
 
+  const colorScheme = useColorScheme() ?? 'light';
+  const borderColor = useThemeColor({}, 'border');
+  const borderMutedColor = useThemeColor({}, 'borderMuted');
+  const tint = useThemeColor({}, 'tint');
+  const hardShadow = HardShadow[colorScheme];
+
   // Recharge les champs avec les filtres actifs à chaque ouverture
   useEffect(() => {
     if (visible) {
@@ -121,7 +132,11 @@ export default function FilterModal({ visible, initialFilters, onClose, onApply 
   return (
     <Modal transparent animationType="fade" visible={visible} onRequestClose={onClose}>
       <View style={styles.backdrop}>
-        <ThemedView style={styles.card} lightColor="#ffffff" darkColor="#1f2224">
+        <ThemedView
+          style={[styles.card, { borderColor }, hardShadow]}
+          lightColor="#ffffff"
+          darkColor="#16294A"
+        >
           <ThemedText type="subtitle" style={styles.title}>
             Filtrer les chauffeurs
           </ThemedText>
@@ -131,10 +146,10 @@ export default function FilterModal({ visible, initialFilters, onClose, onApply 
           <FilterRow label="Distance" suffix="m" field={distance} onChange={setDistance} />
 
           <View style={styles.actions}>
-            <Pressable style={styles.secondaryBtn} onPress={handleReset}>
+            <Pressable style={[styles.secondaryBtn, { borderColor: borderMutedColor }]} onPress={handleReset}>
               <ThemedText style={styles.secondaryLabel}>Réinitialiser</ThemedText>
             </Pressable>
-            <Pressable style={styles.primaryBtn} onPress={handleApply}>
+            <Pressable style={[styles.primaryBtn, { backgroundColor: tint, borderColor }]} onPress={handleApply}>
               <ThemedText style={styles.primaryLabel}>Appliquer</ThemedText>
             </Pressable>
           </View>
@@ -147,13 +162,14 @@ export default function FilterModal({ visible, initialFilters, onClose, onApply 
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)',
+    backgroundColor: 'rgba(18,32,58,0.5)',
     alignItems: 'center',
     justifyContent: 'center',
   },
   card: {
     width: 320,
-    borderRadius: 14,
+    borderRadius: Radii.lg,
+    borderWidth: BorderWidth.thick,
     padding: 20,
   },
   title: {
@@ -175,17 +191,13 @@ const styles = StyleSheet.create({
   },
   toggleGroup: {
     flexDirection: 'row',
-    borderWidth: 1.5,
-    borderColor: '#1e1e1e',
-    borderRadius: 8,
+    borderWidth: BorderWidth.thick,
+    borderRadius: Radii.sm,
     overflow: 'hidden',
   },
   toggleOption: {
     paddingHorizontal: 12,
     paddingVertical: 9,
-  },
-  toggleOptionActive: {
-    backgroundColor: '#1e1e1e',
   },
   toggleText: {
     fontWeight: '700',
@@ -211,9 +223,8 @@ const styles = StyleSheet.create({
   secondaryBtn: {
     paddingVertical: 10,
     paddingHorizontal: 18,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#ccc',
+    borderRadius: Radii.sm,
+    borderWidth: BorderWidth.thin,
   },
   secondaryLabel: {
     fontWeight: '600',
@@ -221,11 +232,11 @@ const styles = StyleSheet.create({
   primaryBtn: {
     paddingVertical: 10,
     paddingHorizontal: 18,
-    borderRadius: 8,
-    backgroundColor: '#1e1e1e',
+    borderRadius: Radii.sm,
+    borderWidth: BorderWidth.thick,
   },
   primaryLabel: {
     color: '#fff',
-    fontWeight: '600',
+    fontWeight: '700',
   },
 });

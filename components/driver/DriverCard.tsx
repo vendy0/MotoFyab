@@ -1,8 +1,10 @@
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View, useColorScheme } from 'react-native';
 import { MapPin, RefreshCcw, Star } from 'lucide-react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { useThemeColor } from '@/hooks/use-theme-color';
+import { HardShadow, Radii, BorderWidth } from '@/constants/theme';
 import { Driver } from '@/types';
 
 type Props = {
@@ -11,10 +13,21 @@ type Props = {
 };
 
 export default function DriverCard({ driver, onPress }: Props) {
+  const colorScheme = useColorScheme() ?? 'light';
+  const borderColor = useThemeColor({}, 'border');
+  const iconColor = useThemeColor({}, 'icon');
+  const starColor = useThemeColor({}, 'star');
+  const tint = useThemeColor({}, 'tint');
+  const hardShadow = HardShadow[colorScheme];
+
   return (
     <Pressable onPress={() => onPress(driver)}>
-      <ThemedView style={styles.card} lightColor="#ffffff" darkColor="#1f2224">
-        <View style={styles.avatar}>
+      <ThemedView
+        style={[styles.card, { borderColor }, hardShadow]}
+        lightColor="#FFFFFF"
+        darkColor="#16294A"
+      >
+        <View style={[styles.avatar, { backgroundColor: tint }]}>
           <ThemedText style={styles.avatarInitials}>
             {driver.username.slice(0, 2).toUpperCase()}
           </ThemedText>
@@ -26,20 +39,22 @@ export default function DriverCard({ driver, onPress }: Props) {
               {driver.username}
             </ThemedText>
             <View style={styles.ratingRow}>
-              <Star size={16} color="#f08c00" fill="#f08c00" />
-              <ThemedText style={styles.ratingText}>{driver.rating.toFixed(1)}</ThemedText>
+              <Star size={16} color={starColor} fill={starColor} />
+              <ThemedText style={[styles.ratingText, { color: starColor }]}>
+                {driver.rating.toFixed(1)}
+              </ThemedText>
             </View>
           </View>
 
           <View style={styles.statsRow}>
             <View style={styles.statItem}>
-              <MapPin size={16} color="#7b7b7b" strokeWidth={3} />
+              <MapPin size={16} color={iconColor} strokeWidth={3} />
               <ThemedText style={styles.statText}>
                 {Number.isFinite(driver.distanceMeters) ? `${driver.distanceMeters}m` : '—'}
               </ThemedText>
             </View>
             <View style={styles.statItem}>
-              <RefreshCcw size={14} color="#7b7b7b" strokeWidth={3} />
+              <RefreshCcw size={14} color={iconColor} strokeWidth={3} />
               <ThemedText style={styles.statText}>{driver.trips} courses</ThemedText>
             </View>
           </View>
@@ -53,24 +68,22 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: '#e5e5e5',
+    borderRadius: Radii.lg,
+    borderWidth: BorderWidth.thick,
     padding: 14,
-    marginBottom: 10,
+    marginBottom: 12,
   },
   avatar: {
     width: 58,
     height: 58,
     borderRadius: 29,
-    backgroundColor: '#e9ecef',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 14,
   },
   avatarInitials: {
-    fontWeight: '600',
-    color: '#495057',
+    fontWeight: '700',
+    color: '#FFFFFF',
     fontSize: 16,
   },
   info: {
@@ -91,8 +104,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   ratingText: {
-    color: '#f08c00',
-    fontWeight: '600',
+    fontWeight: '700',
   },
   statsRow: {
     flexDirection: 'row',

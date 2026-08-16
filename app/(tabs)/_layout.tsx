@@ -1,0 +1,90 @@
+import { Tabs } from 'expo-router';
+import { StyleSheet, View } from 'react-native';
+import {
+  ArrowLeftRight,
+  Clock3,
+  House,
+  MessagesSquare,
+  Settings,
+} from 'lucide-react-native';
+
+import { HapticTab } from '@/components/haptic-tab';
+import { useThemeColor } from '@/hooks/use-theme-color';
+
+export default function TabLayout() {
+  const backgroundColor = useThemeColor({}, 'card');
+  const borderColor = useThemeColor({}, 'borderMuted');
+  const activeColor = useThemeColor({}, 'tabIconSelected');
+  const inactiveColor = useThemeColor({}, 'tabIconDefault');
+  const activePillColor = useThemeColor({}, 'tint');
+
+  return (
+    <Tabs
+      initialRouteName="index"
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: activeColor,
+        tabBarInactiveTintColor: inactiveColor,
+        tabBarStyle: [styles.tabBar, { backgroundColor, borderTopColor: borderColor }],
+        tabBarShowLabel: false,
+        tabBarButton: HapticTab,
+      }}
+    >
+      <Tabs.Screen
+        name="transactions"
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <ArrowLeftRight color={color} size={size} strokeWidth={2.5} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="history"
+        options={{
+          tabBarIcon: ({ color, size }) => <Clock3 color={color} size={size} strokeWidth={2.5} />,
+        }}
+      />
+      {/* "index" est l'écran Home, actif par défaut dans le wireframe */}
+      <Tabs.Screen
+        name="index"
+        options={{
+          tabBarIcon: ({ color, focused, size }) => (
+            <View style={focused ? [styles.activeIconWrap, { backgroundColor: activePillColor }] : undefined}>
+              <House color={focused ? '#FFFFFF' : color} size={size} strokeWidth={2.5} />
+            </View>
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="conversation"
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <MessagesSquare color={color} size={size} strokeWidth={2.5} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          tabBarIcon: ({ color, size }) => <Settings color={color} size={size} strokeWidth={2.5} />,
+        }}
+      />
+    </Tabs>
+  );
+}
+
+const styles = StyleSheet.create({
+  tabBar: {
+    height: 64,
+    paddingTop: 10,
+    paddingBottom: 10,
+    borderTopWidth: 1,
+  },
+  activeIconWrap: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
