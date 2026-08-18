@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
-import { FlatList, KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
+
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { FlatList, useColorScheme, KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedView } from '@/components/themed-view';
 import { ThemedText } from '@/components/themed-text';
+import { useThemeColor } from "@/hooks/use-theme-color";
 import ChatHeader from '@/components/chat/ChatHeader';
 import ChatBubble from '@/components/chat/ChatBubble';
+import ChatBackgroundPattern from '@/components/chat/ChatBackgroundPattern';
 import MessageComposer from '@/components/chat/MessageComposer';
 import {
   CURRENT_CLIENT_ID,
@@ -20,6 +23,24 @@ export default function ActiveConversationScreen() {
   const conversationId = Number(id);
   const meta = getConversationMeta(conversationId);
   const [messages, setMessages] = useState<ChatMessage[]>(() => getConversationMessages(conversationId));
+  const listRef = useRef<FlatList>(null);
+  const colorScheme = useColorScheme();
+  const backgroundColor = useThemeColor({}, "background");
+  const patternColor = useThemeColor({}, 'borderMuted'); // ou une couleur dédiée dans theme.ts
+  
+  // Inverted : on affiche du plus récent au plus ancien, donc on reverse les données.
+  // Le plus récent (index 0) se retrouve visuellement en bas.
+  const invertedMessages = useMemo(() => [...messages].reverse(), [messages]);
+
+  // TODO: calculer l'index du dernier message lu et scroller dessus au montage.
+  // Pour l'instant, pass — on laisse la liste s'ouvrir à sa position par défaut (le plus récent).
+  const scrollToLastReadMessage = useCallback(() => {
+    // pass
+  }, []);
+
+  useEffect(() => {
+    scrollToLastReadMessage();
+  }, [scrollToLastReadMessage]);
 
   if (!meta) {
     return (
@@ -42,37 +63,46 @@ export default function ActiveConversationScreen() {
       status: 'sent',
       isOwn: true,
     };
+    // On ajoute à la fin du tableau "normal" (chronologique) — le reverse au-dessus
+    // se charge de le remettre en position 0 pour l'affichage inverted.
     setMessages((prev) => [...prev, newMessage]);
   };
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top', "left", "right"]}>
+    <SafeAreaView style={[styles.safeArea, {backgroundColor}]} edges={['top', "left", "right"]}>
       <ChatHeader
         username={meta.driverUsername}
         rating={meta.driverRating}
-        onBack={()=>router.back()}
+        onBack={()=>router.replace("/(tabs)/")}
         dateLabel={formatDateFr(meta.conversation.started_at)}
         onArchivePress={() => router.push('/conversation/archives')}
       />
       <KeyboardAvoidingView
         style={styles.flex}
-        behavior='padding'
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
       >
+      <View style={styles.chatArea}>
+        <ChatBackgroundPattern color={patternColor} opacity={colorScheme === 'dark' ? 0.5 : 0.75} />
         <FlatList
-          data={messages}
+          ref={listRef}
+          data={invertedMessages}
+          inverted
           keyExtractor={(item) => String(item.id)}
           renderItem={({ item }) => <ChatBubble message={item} />}
           contentContainerStyle={styles.list}
         />
-        <MessageComposer onSend={handleSend} />
+      </View>
+      <MessageComposer onSend={handleSend} />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  chatArea: { flex: 1, position: 'relative' },
   safeArea: { flex: 1 },
   flex: { flex: 1 },
-  list: { padding: 16, flexGrow: 1, justifyContent: 'flex-end' },
+  list: { padding: 16},
   notFound: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 });

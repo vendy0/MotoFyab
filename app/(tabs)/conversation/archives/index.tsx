@@ -84,7 +84,15 @@ const styles = StyleSheet.create({
       borderBottomColor: "gray", 
       borderBottomWidth: 1, 
       paddingVertical: 15,
-      paddingHorizontal: 15
+      paddingHorizontal: 15,
+      shadowColor: "#000",
+      shadowOffset: {
+        width: 0,
+        height: 3,
+      },
+      shadowOpacity: 0.18,
+      shadowRadius: 4,
+      elevation: 4,
   },
   searchWrap: { justifyContent: 'center', marginBottom: 16 },
   searchIcon: { position: 'absolute', left: 12, zIndex: 1, opacity: 0.6 },

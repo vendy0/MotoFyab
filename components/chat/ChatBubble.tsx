@@ -40,7 +40,7 @@ export default function ChatBubble({ message }: Props) {
             {formatTime(message.sentAt)}
           </ThemedText>
           {isOwn && (
-            <TickIcon size={14} color="#FFFFFF" style={[styles.tick, { opacity: tickOpacity }]} />
+            <TickIcon size={14} color="#ccd" style={[styles.tick, { opacity: tickOpacity }]} />
           )}
         </View>
       </View>

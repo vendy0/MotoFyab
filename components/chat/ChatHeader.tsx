@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, View, useColorScheme } from 'react-native';
+import { TouchableOpacity, StyleSheet, View, useColorScheme } from 'react-native';
 import { ArrowLeft, Archive, Star } from 'lucide-react-native';
 
 import { ThemedText } from '@/components/themed-text';
@@ -35,9 +35,9 @@ export default function ChatHeader({ username, rating, dateLabel, onBack, onArch
   return (
     <ThemedView style={[styles.header, { backgroundColor: cardColor, borderColor }, cardShadow]}>
       {onBack && (
-        <Pressable onPress={onBack} hitSlop={8} style={styles.sideButton}>
+        <TouchableOpacity onPress={onBack} hitSlop={8} style={styles.sideButton}>
           <ArrowLeft size={22} color={textColor} strokeWidth={2.5} />
-        </Pressable>
+        </TouchableOpacity>
       )}
 
       <View style={[styles.avatar, { backgroundColor: `${tint}26` }]}>
@@ -58,9 +58,9 @@ export default function ChatHeader({ username, rating, dateLabel, onBack, onArch
           </View>
     
           {onArchivePress && (
-            <Pressable onPress={onArchivePress} hitSlop={8} style={styles.sideButton}>
+            <TouchableOpacity onPress={onArchivePress} hitSlop={8} style={styles.sideButton}>
               <Archive size={25} color={textColor} strokeWidth={2.2} />
-            </Pressable>
+            </TouchableOpacity>
           )}
         </View>
     </ThemedView>

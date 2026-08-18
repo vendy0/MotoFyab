@@ -11,7 +11,7 @@ export type ThemedTextInputProps = TextInputProps & {
 export function ThemedTextInput({ style, lightColor, darkColor, ...rest }: ThemedTextInputProps) {
   const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
   const borderColor = useThemeColor({}, 'borderMuted');
-  const backgroundColor = useThemeColor({}, 'background');
+  const backgroundColor = useThemeColor({}, 'card');
   const placeholderColor = useThemeColor({}, 'icon');
 
   return (
@@ -30,5 +30,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 10,
     fontSize: 15,
+    BorderWidth: 2
   },
 });
