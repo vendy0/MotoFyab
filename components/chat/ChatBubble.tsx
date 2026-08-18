@@ -66,10 +66,10 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   bubbleOwn: {
-    borderBottomRightRadius: 4,
+    borderBottomRightRadius: 3,
   },
   bubbleOther: {
-    borderBottomLeftRadius: 4,
+    borderBottomLeftRadius: 3,
     borderWidth: 1,
   },
   textOwn: {

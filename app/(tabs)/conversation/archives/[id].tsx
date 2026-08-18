@@ -23,7 +23,7 @@ export default function ArchivedConversationScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
+    <SafeAreaView style={styles.safeArea} edges={['top', 'left', "right"]}>
       <ChatHeader
         username={meta.driverUsername}
         rating={meta.driverRating}

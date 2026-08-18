@@ -1,8 +1,6 @@
-import { useState } from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { Send } from 'lucide-react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
 import { ThemedTextInput } from '@/components/common/ThemedTextInput';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { Radii, BorderWidth } from '@/constants/theme';
@@ -26,7 +24,7 @@ export default function MessageComposer({ onSend }: Props) {
   };
 
   return (
-    <SafeAreaView edges={['bottom']} style={[styles.wrap, { backgroundColor: cardColor, borderColor }]}>
+    <View style={styles.wrap}>
       <ThemedTextInput
         style={styles.input}
         value={text}
@@ -41,32 +39,33 @@ export default function MessageComposer({ onSend }: Props) {
       >
         <Send size={18} color="#FFFFFF" strokeWidth={2.5} />
       </Pressable>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  wrap: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    paddingHorizontal: 12,
-    paddingTop: 10,
-    gap: 8,
-    borderTopWidth: BorderWidth.thin,
-  },
+    wrap: {
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+        paddingHorizontal: 5,
+        gap: 5,
+        paddingBottom: 10
+    },
   input: {
     flex: 1,
     maxHeight: 100,
+    height: "2em",
+    borderRadius: 25
   },
   sendButton: {
     width: 40,
     height: 40,
-    borderRadius: Radii.sm,
+    borderRadius: Radii.lg,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 2,
   },
   sendButtonDisabled: {
-    opacity: 0.4,
+    opacity: 0.7,
   },
 });

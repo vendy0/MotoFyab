@@ -1,8 +1,7 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { FlatList, KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
 import { ThemedView } from '@/components/themed-view';
 import { ThemedText } from '@/components/themed-text';
 import ChatHeader from '@/components/chat/ChatHeader';
@@ -47,17 +46,17 @@ export default function ActiveConversationScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top']}>
+    <SafeAreaView style={styles.safeArea} edges={['top', "left", "right"]}>
       <ChatHeader
         username={meta.driverUsername}
         rating={meta.driverRating}
+        onBack={()=>router.back()}
         dateLabel={formatDateFr(meta.conversation.started_at)}
         onArchivePress={() => router.push('/conversation/archives')}
       />
       <KeyboardAvoidingView
         style={styles.flex}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        keyboardVerticalOffset={90}
+        behavior='padding'
       >
         <FlatList
           data={messages}

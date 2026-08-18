@@ -51,16 +51,18 @@ export default function ChatHeader({ username, rating, dateLabel, onBack, onArch
         <ThemedText style={styles.date}>{dateLabel}</ThemedText>
       </View>
 
-      <View style={styles.ratingRow}>
-        <Star size={16} color={goldColor} fill={goldColor} />
-        <ThemedText style={[styles.ratingText, { color: goldColor }]}>{rating.toFixed(1)}</ThemedText>
-      </View>
-
-      {onArchivePress && (
-        <Pressable onPress={onArchivePress} hitSlop={8} style={styles.sideButton}>
-          <Archive size={20} color={textColor} strokeWidth={2.2} />
-        </Pressable>
-      )}
+        <View style={styles.headerEnd}>
+          <View style={styles.ratingRow}>
+            <Star size={16} color={goldColor} fill={goldColor} />
+            <ThemedText style={[styles.ratingText, { color: goldColor }]}>{rating.toFixed(1)}</ThemedText>
+          </View>
+    
+          {onArchivePress && (
+            <Pressable onPress={onArchivePress} hitSlop={8} style={styles.sideButton}>
+              <Archive size={25} color={textColor} strokeWidth={2.2} />
+            </Pressable>
+          )}
+        </View>
     </ThemedView>
   );
 }
@@ -70,7 +72,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 15,
     borderBottomWidth: BorderWidth.thin,
     gap: 10,
   },
@@ -95,6 +97,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     opacity: 0.6,
     marginTop: 1,
+  },
+  headerEnd: {
+      flexDirection: "row",
+      gap: 30
   },
   ratingRow: {
     flexDirection: 'row',
