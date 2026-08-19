@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
   safeArea: { 
       flex: 1
   },
-  screen: { flex: 1, paddingHorizontal: 16 },
+  screen: { flex: 1 },
   headerRow: { 
       flexDirection: 'row', 
       alignItems: 'center', 
@@ -94,7 +94,11 @@ const styles = StyleSheet.create({
       shadowRadius: 4,
       elevation: 4,
   },
-  searchWrap: { justifyContent: 'center', marginBottom: 16 },
+  searchWrap: { 
+      justifyContent: 'center', 
+      marginBottom: 24, 
+      marginHorizontal: 16
+    },
   searchIcon: { position: 'absolute', left: 12, zIndex: 1, opacity: 0.6 },
   searchInput: { paddingLeft: 36 },
   list: { paddingBottom: 24 },

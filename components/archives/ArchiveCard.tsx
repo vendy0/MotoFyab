@@ -79,10 +79,8 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: Radii.lg,
     borderWidth: BorderWidth.thin,
     padding: 14,
-    marginBottom: 12,
   },
   avatar: {
     width: 48,

@@ -5,3 +5,5 @@
 5. FAB pour scroll to end
 6. ScrollToLastMessage
 7. Remplacer le return null de app/(tabs)/conversation/index.tsx par un loader
+8. Supprimer la couleur du status de la course dans les archives
+9. Gérer les images (logos, icones...)
