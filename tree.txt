@@ -2,10 +2,17 @@
 ├── AGENTS.md
 ├── CLAUDE.md
 ├── README-MotoFyab.md
+├── TODO.md
 ├── app
 │   ├── (tabs)
 │   │   ├── _layout.tsx
-│   │   ├── conversation.tsx
+│   │   ├── conversation
+│   │   │   ├── [id].tsx
+│   │   │   ├── _layout.tsx
+│   │   │   ├── archives
+│   │   │   │   ├── [id].tsx
+│   │   │   │   └── index.tsx
+│   │   │   └── index.tsx
 │   │   ├── history.tsx
 │   │   ├── index.tsx
 │   │   ├── settings.tsx
@@ -17,15 +24,28 @@
 │       ├── android-icon-background.png
 │       ├── android-icon-foreground.png
 │       ├── android-icon-monochrome.png
+│       ├── chatPattern.svg
 │       ├── favicon.png
+│       ├── file_0000000045cc81fb9b67de83779eee84.png
 │       ├── icon.png
+│       ├── motofyab_dark.png
+│       ├── motofyab_light.png
 │       ├── partial-react-logo.png
 │       ├── react-logo.png
 │       ├── react-logo@2x.png
 │       ├── react-logo@3x.png
 │       └── splash-icon.png
 ├── components
+│   ├── archives
+│   │   └── ArchiveCard.tsx
+│   ├── chat
+│   │   ├── ChatBackgroundPattern.tsx
+│   │   ├── ChatBubble.tsx
+│   │   ├── ChatHeader.tsx
+│   │   ├── ChatView.tsx
+│   │   └── MessageComposer.tsx
 │   ├── common
+│   │   ├── ConfirmModal.tsx
 │   │   └── ThemedTextInput.tsx
 │   ├── driver
 │   │   ├── ContactModal.tsx
@@ -50,17 +70,20 @@
 ├── hooks
 │   ├── use-color-scheme.ts
 │   ├── use-color-scheme.web.ts
-│   └── use-theme-color.ts
+│   ├── use-theme-color.ts
+│   ├── useActiveRideState.ts
+│   └── useCountdown.ts
 ├── mockData.tsx
 ├── package-lock.json
 ├── package.json
 ├── scripts
 │   └── reset-project.js
 ├── services
+│   ├── conversationService.ts
 │   ├── driverService.ts
 │   └── options.ts
 ├── tree.txt
 ├── tsconfig.json
 └── types.ts
 
-14 directories, 50 files
+18 directories, 69 files

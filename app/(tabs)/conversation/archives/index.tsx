@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
 import { ArrowLeft, Search } from 'lucide-react-native';
@@ -10,6 +10,7 @@ import ArchiveCard from '@/components/archives/ArchiveCard';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { getArchivedConversations } from '@/services/conversationService';
 import { ConversationSummary } from '@/types';
+import { useGetArchivedConversationsQuery } from '@/store/api/conversationApi';
 
 export default function ArchivesListScreen() {
   const [query, setQuery] = useState('');
@@ -17,7 +18,8 @@ export default function ArchivesListScreen() {
   const tint = useThemeColor({}, 'tint');
   const backgroundColor = useThemeColor({}, 'background');
   const card = useThemeColor({}, 'card');
-  const conversations = useMemo(() => getArchivedConversations(), []);
+  const { data: conversations = [] } = useGetArchivedConversationsQuery();
+  // const conversations = useMemo(() => getArchivedConversations(), []);
 
   const filtered = conversations.filter((c) =>
     c.driverUsername.toLowerCase().includes(query.trim().toLowerCase())
